@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14E7f" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="vXZ-lx-hvc">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <mutableArray key="System San Francisco Display Medium.ttf">
+            <string>.HelveticaNeueDeskInterface-MediumP4</string>
+            <string>.HelveticaNeueDeskInterface-MediumP4</string>
+            <string>.HelveticaNeueDeskInterface-MediumP4</string>
+            <string>.HelveticaNeueDeskInterface-MediumP4</string>
+            <string>.HelveticaNeueDeskInterface-MediumP4</string>
+            <string>.HelveticaNeueDeskInterface-MediumP4</string>
+            <string>.HelveticaNeueDeskInterface-MediumP4</string>
+            <string>.HelveticaNeueDeskInterface-MediumP4</string>
+            <string>.HelveticaNeueDeskInterface-MediumP4</string>
+            <string>.HelveticaNeueDeskInterface-MediumP4</string>
+            <string>.HelveticaNeueDeskInterface-MediumP4</string>
+            <string>.HelveticaNeueDeskInterface-MediumP4</string>
+        </mutableArray>
+    </customFonts>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="ufC-wZ-h7g">
+            <objects>
+                <viewController id="vXZ-lx-hvc" customClass="ViewController" customModule="WatchTransition" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
+                        <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ClockTruth" translatesAutoresizingMaskIntoConstraints="NO" id="1xG-EC-jO2">
+                                <rect key="frame" x="222" y="202" width="156" height="195"/>
+                            </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rhE-Mb-aem" userLabel="Backdrop">
+                                <rect key="frame" x="0.0" y="20" width="600" height="580"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Shell" translatesAutoresizingMaskIntoConstraints="NO" id="bZt-Un-Hxv">
+                                <rect key="frame" x="132" y="66" width="348" height="481"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="348" id="A6f-hi-ywt"/>
+                                    <constraint firstAttribute="height" constant="481" id="bmR-th-uNE"/>
+                                </constraints>
+                            </imageView>
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="Fu0-rM-Bhi">
+                                <rect key="frame" x="58" y="550" width="483" height="31"/>
+                                <connections>
+                                    <action selector="crownSliderDidChange:" destination="vXZ-lx-hvc" eventType="valueChanged" id="zCR-Jf-Aqb"/>
+                                </connections>
+                            </slider>
+                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Fmg-o7-U5O" userLabel="Other Apps Clipper">
+                                <rect key="frame" x="222" y="202" width="156" height="195"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="OtherApps" translatesAutoresizingMaskIntoConstraints="NO" id="674-NI-CIB" userLabel="OtherApps">
+                                        <rect key="frame" x="0.0" y="0.0" width="156" height="195"/>
+                                    </imageView>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Battery" translatesAutoresizingMaskIntoConstraints="NO" id="OAl-MU-1Ka">
+                                        <rect key="frame" x="0.0" y="0.0" width="25" height="25"/>
+                                    </imageView>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Events" translatesAutoresizingMaskIntoConstraints="NO" id="aCt-VA-1Fl">
+                                        <rect key="frame" x="7" y="181" width="142" height="10"/>
+                                    </imageView>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Temp" translatesAutoresizingMaskIntoConstraints="NO" id="lwH-VA-YXP">
+                                        <rect key="frame" x="128" y="4" width="25" height="10"/>
+                                    </imageView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="674-NI-CIB" firstAttribute="leading" secondItem="Fmg-o7-U5O" secondAttribute="leading" id="3w5-IV-rkh"/>
+                                    <constraint firstItem="674-NI-CIB" firstAttribute="top" secondItem="Fmg-o7-U5O" secondAttribute="top" id="5EV-QA-9cn"/>
+                                    <constraint firstAttribute="bottom" secondItem="674-NI-CIB" secondAttribute="bottom" id="C2K-ey-3Q5"/>
+                                    <constraint firstAttribute="trailing" secondItem="674-NI-CIB" secondAttribute="trailing" id="ah7-md-YmA"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7PO-S0-blg" userLabel="ContentView">
+                                <rect key="frame" x="222" y="202" width="156" height="195"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="71R-az-bKF" userLabel="BonusView (Whoops)">
+                                        <rect key="frame" x="-9" y="7" width="175" height="181"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="12" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lWC-eT-NHh">
+                                                <rect key="frame" x="78" y="20" width="22" height="25"/>
+                                                <fontDescription key="fontDescription" name=".HelveticaNeueDeskInterface-MediumP4" family="San Francisco Display" pointSize="21"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="1" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YIi-Wf-M1I">
+                                                <rect key="frame" x="113.5" y="27" width="10" height="25"/>
+                                                <fontDescription key="fontDescription" name=".HelveticaNeueDeskInterface-MediumP4" family="San Francisco Display" pointSize="21"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="2" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tnR-RH-Cn5">
+                                                <rect key="frame" x="134" y="49.5" width="13" height="25"/>
+                                                <fontDescription key="fontDescription" name=".HelveticaNeueDeskInterface-MediumP4" family="San Francisco Display" pointSize="21"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="3" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uzj-jo-hdv">
+                                                <rect key="frame" x="142" y="78.5" width="13" height="25"/>
+                                                <fontDescription key="fontDescription" name=".HelveticaNeueDeskInterface-MediumP4" family="San Francisco Display" pointSize="21"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="4" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dLk-SM-vJ6">
+                                                <rect key="frame" x="131.5" y="107" width="14" height="25"/>
+                                                <fontDescription key="fontDescription" name=".HelveticaNeueDeskInterface-MediumP4" family="San Francisco Display" pointSize="21"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="5" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0zf-we-tYf">
+                                                <rect key="frame" x="112.5" y="127" width="14" height="25"/>
+                                                <fontDescription key="fontDescription" name=".HelveticaNeueDeskInterface-MediumP4" family="San Francisco Display" pointSize="21"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="6" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="skd-IR-KWS">
+                                                <rect key="frame" x="81.5" y="136" width="13" height="25"/>
+                                                <fontDescription key="fontDescription" name=".HelveticaNeueDeskInterface-MediumP4" family="San Francisco Display" pointSize="21"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="7" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bGa-Mn-kDb">
+                                                <rect key="frame" x="52" y="127.5" width="13" height="25"/>
+                                                <fontDescription key="fontDescription" name=".HelveticaNeueDeskInterface-MediumP4" family="San Francisco Display" pointSize="21"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="8" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ON6-2L-xOY">
+                                                <rect key="frame" x="29.5" y="107" width="14" height="25"/>
+                                                <fontDescription key="fontDescription" name=".HelveticaNeueDeskInterface-MediumP4" family="San Francisco Display" pointSize="21"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="9" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lBn-3Y-6ZI">
+                                                <rect key="frame" x="20" y="78.5" width="13" height="25"/>
+                                                <fontDescription key="fontDescription" name=".HelveticaNeueDeskInterface-MediumP4" family="San Francisco Display" pointSize="21"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="10" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dKW-kc-zKu">
+                                                <rect key="frame" x="29.5" y="50" width="23" height="25"/>
+                                                <fontDescription key="fontDescription" name=".HelveticaNeueDeskInterface-MediumP4" family="San Francisco Display" pointSize="21"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="11" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jOw-lD-kye">
+                                                <rect key="frame" x="51.5" y="28" width="19" height="25"/>
+                                                <fontDescription key="fontDescription" name=".HelveticaNeueDeskInterface-MediumP4" family="San Francisco Display" pointSize="21"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </view>
+                                </subviews>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Fmg-o7-U5O" firstAttribute="top" secondItem="7PO-S0-blg" secondAttribute="top" id="3ap-nX-Mtq"/>
+                            <constraint firstItem="Fmg-o7-U5O" firstAttribute="trailing" secondItem="7PO-S0-blg" secondAttribute="trailing" id="DGj-nD-947"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Fu0-rM-Bhi" secondAttribute="trailing" constant="45" id="EH3-Xm-iO9"/>
+                            <constraint firstItem="Fmg-o7-U5O" firstAttribute="bottom" secondItem="7PO-S0-blg" secondAttribute="bottom" id="JHB-jU-Xcl"/>
+                            <constraint firstItem="Fu0-rM-Bhi" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" constant="44" id="JoC-lA-zQZ"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="Fu0-rM-Bhi" secondAttribute="bottom" constant="20" id="Khg-Hc-6Yy"/>
+                            <constraint firstItem="7PO-S0-blg" firstAttribute="leading" secondItem="1xG-EC-jO2" secondAttribute="leading" id="LPK-mZ-xjy"/>
+                            <constraint firstItem="7PO-S0-blg" firstAttribute="top" secondItem="1xG-EC-jO2" secondAttribute="top" id="Lbc-Jg-MNr"/>
+                            <constraint firstAttribute="centerX" secondItem="1xG-EC-jO2" secondAttribute="centerX" id="LiK-dc-r8g"/>
+                            <constraint firstItem="rhE-Mb-aem" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="MZd-gn-mS1"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="rhE-Mb-aem" secondAttribute="bottom" id="MfK-7f-f3r"/>
+                            <constraint firstItem="Fmg-o7-U5O" firstAttribute="leading" secondItem="7PO-S0-blg" secondAttribute="leading" id="Qew-gQ-hiT"/>
+                            <constraint firstItem="1xG-EC-jO2" firstAttribute="top" secondItem="bZt-Un-Hxv" secondAttribute="top" constant="136" id="ZLV-f7-L9X"/>
+                            <constraint firstAttribute="trailing" secondItem="rhE-Mb-aem" secondAttribute="trailing" id="aVa-hN-Pj3"/>
+                            <constraint firstItem="rhE-Mb-aem" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" id="dUr-be-yqV"/>
+                            <constraint firstItem="7PO-S0-blg" firstAttribute="trailing" secondItem="1xG-EC-jO2" secondAttribute="trailing" id="drh-H8-q0D"/>
+                            <constraint firstItem="1xG-EC-jO2" firstAttribute="leading" secondItem="bZt-Un-Hxv" secondAttribute="leading" constant="90" id="ghX-n3-3RW"/>
+                            <constraint firstItem="7PO-S0-blg" firstAttribute="bottom" secondItem="1xG-EC-jO2" secondAttribute="bottom" id="uaE-ke-TBO"/>
+                            <constraint firstAttribute="centerY" secondItem="1xG-EC-jO2" secondAttribute="centerY" constant="0.5" id="vEO-xS-Aio"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="clockTruthView" destination="1xG-EC-jO2" id="hKu-2R-Ocp"/>
+                        <outlet property="contentView" destination="7PO-S0-blg" id="zlo-qE-kNH"/>
+                        <outlet property="crownSlider" destination="Fu0-rM-Bhi" id="eiG-X1-Bch"/>
+                        <outlet property="otherAppsView" destination="674-NI-CIB" id="vvP-7V-O15"/>
+                        <outletCollection property="tickLabels" destination="lWC-eT-NHh" collectionClass="NSMutableArray" id="LII-Aq-cLR"/>
+                        <outletCollection property="tickLabels" destination="YIi-Wf-M1I" collectionClass="NSMutableArray" id="8W1-Cc-raO"/>
+                        <outletCollection property="tickLabels" destination="tnR-RH-Cn5" collectionClass="NSMutableArray" id="TMO-DZ-SPm"/>
+                        <outletCollection property="tickLabels" destination="Uzj-jo-hdv" collectionClass="NSMutableArray" id="BYp-4B-F8d"/>
+                        <outletCollection property="tickLabels" destination="dLk-SM-vJ6" collectionClass="NSMutableArray" id="fsi-Vg-79x"/>
+                        <outletCollection property="tickLabels" destination="0zf-we-tYf" collectionClass="NSMutableArray" id="EHQ-qg-JPi"/>
+                        <outletCollection property="tickLabels" destination="skd-IR-KWS" collectionClass="NSMutableArray" id="ho0-oD-Yxw"/>
+                        <outletCollection property="tickLabels" destination="bGa-Mn-kDb" collectionClass="NSMutableArray" id="Ptf-Bl-Fcp"/>
+                        <outletCollection property="tickLabels" destination="ON6-2L-xOY" collectionClass="NSMutableArray" id="70B-Sb-DFH"/>
+                        <outletCollection property="tickLabels" destination="lBn-3Y-6ZI" collectionClass="NSMutableArray" id="xcW-aN-yhl"/>
+                        <outletCollection property="tickLabels" destination="dKW-kc-zKu" collectionClass="NSMutableArray" id="QMk-27-Euh"/>
+                        <outletCollection property="tickLabels" destination="jOw-lD-kye" collectionClass="NSMutableArray" id="wQ3-06-Ywa"/>
+                        <outletCollection property="complicationViews" destination="lwH-VA-YXP" collectionClass="NSMutableArray" id="6Tj-J4-GTS"/>
+                        <outletCollection property="complicationViews" destination="OAl-MU-1Ka" collectionClass="NSMutableArray" id="nGT-08-6IP"/>
+                        <outletCollection property="complicationViews" destination="aCt-VA-1Fl" collectionClass="NSMutableArray" id="JrH-7i-kKt"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
+            </objects>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Battery" width="25" height="25"/>
+        <image name="ClockTruth" width="156" height="195"/>
+        <image name="Events" width="142" height="10"/>
+        <image name="OtherApps" width="156" height="195"/>
+        <image name="Shell" width="351" height="483"/>
+        <image name="Temp" width="25" height="10"/>
+    </resources>
+</document>

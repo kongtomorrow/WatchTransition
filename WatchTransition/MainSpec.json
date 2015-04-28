@@ -1,0 +1,65 @@
+[
+  {
+    "label" : "Clock Radius",
+    "key" : "ClockRadius",
+    "sliderMinValue" : 0,
+    "sliderMaxValue" : 150,
+    "sliderValue" : 77.5
+  },
+  {
+    "label" : "Large Tick Width",
+    "key" : "LargeTickWidth",
+    "sliderMinValue" : 0,
+    "sliderMaxValue" : 10,
+    "sliderValue" : 3
+  },
+  {
+    "label" : "Small Tick Width",
+    "key" : "SmallTickWidth",
+    "sliderMinValue" : 0,
+    "sliderMaxValue" : 10,
+    "sliderValue" : 1
+  },
+  {
+    "label" : "Line Width",
+    "key" : "LineWidth",
+    "sliderMinValue" : 0,
+    "sliderMaxValue" : 15,
+    "sliderValue" : 5.5
+  },
+  {
+    "label" : "Pattern Phase",
+    "key" : "PatternPhase",
+    "sliderMinValue" : 0,
+    "sliderMaxValue" : 3,
+    "sliderValue" : 2
+  },
+  {
+    "label" : "Second Hand Overhang",
+    "key" : "SecondHandOverhang",
+    "sliderMinValue" : 0,
+    "sliderMaxValue" : 20,
+    "sliderValue" : 12.5
+  },
+  {
+    "label" : "Min Scale",
+    "key" : "MinScale",
+    "sliderMinValue" : 0.1,
+    "sliderMaxValue" : 0.26,
+    "sliderValue" : 0.24
+  },
+  {
+    "label" : "Second Hand Mini Thickness",
+    "key" : "SecondHandMiniThickness",
+    "sliderMinValue" : 1,
+    "sliderMaxValue" : 12,
+    "sliderValue" : 6
+  },
+  {
+    "label" : "Oar Curve Len",
+    "key" : "OarCurveLen",
+    "sliderMinValue" : 5,
+    "sliderMaxValue" : 10,
+    "sliderValue" : 6
+  }
+]

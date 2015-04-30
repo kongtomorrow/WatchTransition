@@ -16,7 +16,7 @@ class ViewController: UIViewController {
     }
     var masterTiming : Double = 0 {
         didSet {
-            interactiveAnimationUpdate()
+            updateForAnimation()
         }
     }
 
@@ -56,18 +56,20 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        createIvars()
-        
+        makeLayers()
+
         let spec = KFTunableSpec(named:"MainSpec")
         view.addGestureRecognizer(KFTunableSpec(named:"MainSpec").twoFingerTripleTapGestureRecognizer())
-        for key in [ "ClockRadius", "LineWidth", "LargeTickWidth", "SmallTickWidth", "SecondHandOverhang", "PatternPhase", "SecondHandMiniThickness", "OarCurveLen" ] {
+        
+        let configAffectingSpecKeys = [ "ClockRadius", "LineWidth", "LargeTickWidth", "SmallTickWidth", "SecondHandOverhang", "PatternPhase", "SecondHandMiniThickness", "OarCurveLen" ]
+        for key in configAffectingSpecKeys {
             spec.withDoubleForKey(key, owner: self) { (owner, _) in
-                owner.updatePropertiesFromSpec()
+                let props = spec.dictionaryRepresentation() as! Dictionary<String,CGFloat>
+                owner.configureLayers()
             }
         }
         
         masterTiming = Double(crownSlider.value)
-        interactiveAnimationUpdate()
         
         let anim = CABasicAnimation(keyPath:"transform.rotation")
         anim.fromValue = 0
@@ -78,7 +80,7 @@ class ViewController: UIViewController {
         secondHandMiniLayer.addAnimation(anim, forKey: "tick")
     }
 
-    func createIvars() {
+    func makeLayers() {
         positioningLayer = CALayer(superlayer: contentView.layer, position: centerScreen)
         watchBezelMiniLayer = CALayer(superlayer: positioningLayer, backgroundColor:.whiteColor())
         hourHandMiniLayer = CAShapeLayer(superlayer:positioningLayer, fillColor:.blackColor())
@@ -97,7 +99,126 @@ class ViewController: UIViewController {
         blackCapLayer = CALayer(superlayer: maskLayer, backgroundColor: .blackColor())
     }
     
-    func interactiveAnimationUpdate() {
+    // this is separated from makeLayers because we want to use KFTunableSpec to change design values.
+    // we rerun this method whenever that happens.
+    func configureLayers() {
+        let spec = KFTunableSpec(named:"MainSpec")
+        
+        let outsideRadius = CGFloat(spec.doubleForKey("ClockRadius"))
+        let tickThickness = CGFloat(spec.doubleForKey("LineWidth"))
+        let bigTickWidth = CGFloat(spec.doubleForKey("LargeTickWidth"))
+        let smallTickWidth = CGFloat(spec.doubleForKey("SmallTickWidth"))
+        let secondHandOverhang = CGFloat(spec.doubleForKey("SecondHandOverhang"))
+        let tickPatternPhase = CGFloat(spec.doubleForKey("PatternPhase"))
+        let secondHandMiniThickness = CGFloat(spec.doubleForKey("SecondHandMiniThickness"))
+        let pi = CGFloat(M_PI)
+        let watchFaceBounds = CGRect(center: CGPointZero, width: 2 * outsideRadius, height: 2 * outsideRadius)
+        
+        // these are random, where the watch hands point.
+        let hourHandRotationXForm = CGAffineTransformMakeRotation(0.66 * 2 * pi)
+        let minuteHandRotationXForm = CGAffineTransformMakeRotation(0.25 * 2 * pi)
+        
+        //    whiteDiskLayer
+        watchBezelMiniLayer.bounds = watchFaceBounds
+        watchBezelMiniLayer.cornerRadius = watchFaceBounds.size.height/2
+        
+        //    hourHandMiniLayer
+        let minuteHandLength = outsideRadius - tickThickness - 0.5 /* 0.5 == half a point == 1 pixel is taken visually from the design */
+        let hourHandLength = minuteHandLength * 2 / 3
+        let handleLen = CGFloat(7)
+        let handleThickness : CGFloat = 2
+        let miniBladeThickness : CGFloat = 8
+        let bladeThickness : CGFloat = 6
+        
+        hourHandMiniLayer.path = OarShapedBezier(handleLength: handleLen, totalLength: hourHandLength, handleThickness: handleThickness, bladeThickness: miniBladeThickness)
+        hourHandMiniLayer.anchorPoint = CGPoint(x: 0.5, y: 0.0)
+        hourHandMiniLayer.setAffineTransform(hourHandRotationXForm)
+        
+        //    minuteHandMiniLayer
+        minuteHandMiniLayer.path = OarShapedBezier(handleLength: handleLen, totalLength: minuteHandLength, handleThickness: handleThickness, bladeThickness: miniBladeThickness)
+        minuteHandMiniLayer.anchorPoint = CGPoint(x: 0.5, y: 0.0)
+        minuteHandMiniLayer.setAffineTransform(minuteHandRotationXForm)
+        
+        //    secondHandMiniLayer
+        func handRect(#thickness:CGFloat, #length:CGFloat, overhang:CGFloat = 0)->CGRect {
+            return CGRect(x: -thickness/2, y: -overhang, width: thickness, height: length)
+        }
+        
+        let secondHandMiniLength = minuteHandLength + secondHandOverhang
+        secondHandMiniLayer.bounds = handRect(thickness:secondHandMiniThickness, length:secondHandMiniLength, overhang:secondHandOverhang)
+        secondHandMiniLayer.anchorPoint = CGPoint(x: 0.5, y: secondHandOverhang / secondHandMiniLength)
+        
+        // orangeCapMiniLayer
+        let orangeCapMiniLayerRadius = CGFloat(5)
+        
+        orangeCapMiniLayer.bounds = CGRect(center: CGPointZero, width: 2 * orangeCapMiniLayerRadius, height: 2 * orangeCapMiniLayerRadius)
+        orangeCapMiniLayer.cornerRadius = orangeCapMiniLayerRadius
+        
+        // that's it for the mini representation
+        
+        // dialLayer
+        let radiusToTickMiddle = outsideRadius - tickThickness/2
+        let tickMiddleCircumference = pi * 2 * radiusToTickMiddle
+        let tickNominalGapWidth = tickMiddleCircumference / 60
+        let tickBigToSmallGapWidth = tickNominalGapWidth - bigTickWidth/2 - smallTickWidth/2
+        let tickSmalToSmallGapWidth = tickNominalGapWidth - smallTickWidth
+        let dialRotation = pi/2 + 2*pi*tickPatternPhase/tickMiddleCircumference
+        
+        let tickPattern : [NSNumber] = [
+            bigTickWidth,
+            tickBigToSmallGapWidth,
+            smallTickWidth,
+            tickSmalToSmallGapWidth,
+            smallTickWidth,
+            tickSmalToSmallGapWidth,
+            smallTickWidth,
+            tickSmalToSmallGapWidth,
+            smallTickWidth,
+            tickBigToSmallGapWidth]
+        
+        dialLayer.path = UIBezierPath(ovalInRect:CGRect(center: CGPointZero, width: radiusToTickMiddle * 2, height: radiusToTickMiddle * 2)).CGPath
+        dialLayer.bounds = watchFaceBounds
+        dialLayer.lineWidth = tickThickness
+        dialLayer.setAffineTransform(CGAffineTransformMakeRotation(-dialRotation))
+        dialLayer.lineDashPattern = tickPattern
+        
+        //    hourHandLayer
+        
+        hourHandLayer.path = OarShapedBezier(handleLength: handleLen, totalLength: hourHandLength, handleThickness: handleThickness, bladeThickness: bladeThickness)
+        hourHandLayer.anchorPoint = CGPoint(x: 0.5, y:0)
+        hourHandLayer.setAffineTransform(hourHandRotationXForm)
+        hourHandLayer.shadowPath = hourHandLayer.path
+        hourHandLayer.shadowOpacity = 1
+        hourHandLayer.shadowOffset = CGSizeZero
+        
+        //    minuteHandLayer
+        minuteHandLayer.path = OarShapedBezier(handleLength: handleLen, totalLength: minuteHandLength, handleThickness: handleThickness, bladeThickness: bladeThickness)
+        minuteHandLayer.anchorPoint = CGPoint(x: 0.5, y:0)
+        minuteHandLayer.setAffineTransform(minuteHandRotationXForm)
+        minuteHandLayer.shadowPath = minuteHandLayer.path
+        minuteHandLayer.shadowOpacity = 1
+        minuteHandLayer.shadowOffset = CGSizeZero
+        
+        //    whiteCapLayer
+        whiteCapLayer.bounds = CGRectMake(-3, -3, 6, 6)
+        whiteCapLayer.cornerRadius = 3
+        
+        //    secondHandLayer
+        let secondHandLength = outsideRadius + secondHandOverhang
+        let secondHandThickness : CGFloat = 1
+        secondHandLayer.bounds = handRect(thickness:secondHandThickness, length:secondHandLength, overhang:secondHandOverhang)
+        secondHandLayer.anchorPoint = CGPoint(x: 0.5, y: secondHandOverhang / secondHandLength)
+        
+        //    orangeCapLayer
+        orangeCapLayer.bounds = CGRectMake(-2, -2, 4, 4)
+        orangeCapLayer.cornerRadius = 2
+        
+        //    blackCapLayer
+        blackCapLayer.bounds = CGRectMake(-1, -1, 2, 2)
+        blackCapLayer.cornerRadius = 1
+    }
+    
+    func updateForAnimation() {
         CATransaction.setAnimationDuration(0)
         
         // the start times and end times of various separate animations
@@ -111,25 +232,27 @@ class ViewController: UIViewController {
         switch progressInRange(blackCircleGrowthRange, masterTiming) {
         case .Before:
             maskLayer.masksToBounds = false
-            break
-        case let .During(progress):
-            maskLayer.masksToBounds = true
-            
-            maskLayer.bounds = CGRect(center: CGPointZero, width: contentView.bounds.width, height: contentView.bounds.height)
-            maskLayer.backgroundColor = UIColor.blackColor().CGColor
-            for miniLayer in miniLayers {
-                miniLayer.hidden = false
-            }
-            
-            maskLayer.bounds = CGRectApplyAffineTransform(dialLayer.bounds, CGAffineTransformMakeScale(progress, progress))
-            maskLayer.cornerRadius = maskLayer.bounds.size.width/2
-        case .After:
-            maskLayer.masksToBounds = false
-            maskLayer.bounds = CGRect(center: CGPointZero, width: contentView.bounds.width, height: contentView.bounds.height)
             maskLayer.backgroundColor = nil
             
-            for miniLayer in miniLayers {
-                miniLayer.hidden = true
+            for layer in miniLayers {
+                layer.hidden = false
+            }
+        case let .During(progress):
+            maskLayer.masksToBounds = true
+            maskLayer.backgroundColor = UIColor.blackColor().CGColor
+            maskLayer.bounds = CGRectApplyAffineTransform(dialLayer.bounds, CGAffineTransformMakeScale(progress, progress))
+            maskLayer.cornerRadius = maskLayer.bounds.size.width/2
+            
+            for layer in miniLayers {
+                layer.hidden = false
+            }
+        case .After:
+            maskLayer.masksToBounds = false
+            maskLayer.backgroundColor = nil
+            maskLayer.bounds = dialLayer.bounds
+            
+            for layer in miniLayers {
+                layer.hidden = true
             }
         }
         
@@ -141,6 +264,8 @@ class ViewController: UIViewController {
                 label.hidden = true
             }
         case let .During(progress):
+            dialLayer.hidden = false
+            dialLayer.strokeEnd = progress
             for i in 0..<tickLabels.count {
                 let ithAnimRange = (Double(i)/12)..<((Double(i)+0.7)/12)
                 switch progressInRange(ithAnimRange, Double(progress)) {
@@ -154,32 +279,35 @@ class ViewController: UIViewController {
                     tickLabels[i].transform = CGAffineTransformIdentity
                 }
             }
-            dialLayer.hidden = false
-            dialLayer.strokeEnd = progress
         case .After:
+            dialLayer.hidden = false
+            dialLayer.strokeEnd = 1.0
             for i in 0..<tickLabels.count {
                 tickLabels[i].hidden = false
                 tickLabels[i].transform = CGAffineTransformIdentity
             }
-            dialLayer.hidden = false
-            dialLayer.strokeEnd = 1.0
         }
         
         // zooming in on everything
-        let minScale = KFTunableSpec(named: "MainSpec").doubleForKey("MinScale")
-        let contentScaleRange = minScale...1.0
+        // turns out we need two separate scalings – the other apps need to zoom in and move offscreen faster than the watch app for the effect to look correct.
+        let startScaleForMiniWatch = KFTunableSpec(named: "MainSpec").doubleForKey("MinScale")
+        let contentScaleRange = startScaleForMiniWatch...1.0
         let otherAppsScaleRange = 1.0...5.0
+        
         switch progressInRange(scaleAllContentRange, masterTiming) {
         case .Before:
             let contentScale = CGFloat(contentScaleRange.start)
             contentView.transform = CGAffineTransformMakeScale(contentScale, contentScale)
-            
             otherAppsView.transform = CGAffineTransformIdentity
         case let .During(progress):
-            let s = CGFloat((contentScaleRange.end - contentScaleRange.start) * Double(progress) + contentScaleRange.start)
-            contentView.transform = CGAffineTransformMakeScale(s, s)
+            func linearInterpolate(time:CGFloat, interval:ClosedInterval<Double>)->CGFloat {
+                return CGFloat(interval.start + Double(time) * (interval.end - interval.start))
+            }
+
+            let contentScale = linearInterpolate(progress, contentScaleRange)
+            contentView.transform = CGAffineTransformMakeScale(contentScale, contentScale)
             
-            let otherAppsScale = CGFloat((otherAppsScaleRange.end - otherAppsScaleRange.start) * Double(progress) + otherAppsScaleRange.start)
+            let otherAppsScale = linearInterpolate(progress, otherAppsScaleRange)
             otherAppsView.transform = CGAffineTransformMakeScale(otherAppsScale, otherAppsScale)
         case .After:
             contentView.transform = CGAffineTransformIdentity
@@ -204,120 +332,6 @@ class ViewController: UIViewController {
                 view.transform = CGAffineTransformIdentity
             }
         }
-    }
-    
-    func updatePropertiesFromSpec() {
-        let spec = KFTunableSpec(named:"MainSpec")
-
-        let outsideRadius = CGFloat(spec.doubleForKey("ClockRadius"))
-        let tickThickness = CGFloat(spec.doubleForKey("LineWidth"))
-        let bigTickWidth = CGFloat(spec.doubleForKey("LargeTickWidth"))
-        let smallTickWidth = CGFloat(spec.doubleForKey("SmallTickWidth"))
-        let secondHandOverhang = CGFloat(spec.doubleForKey("SecondHandOverhang"))
-        let tickPatternPhase = CGFloat(spec.doubleForKey("PatternPhase"))
-        let secondHandMiniThickness = CGFloat(spec.doubleForKey("SecondHandMiniThickness"))
-        let pi = CGFloat(M_PI)
-        let dialPixelBounds = CGRect(x: -outsideRadius, y: -outsideRadius, width: outsideRadius * 2, height: outsideRadius * 2)
-        
-        
-        //    whiteDiskLayer
-        watchBezelMiniLayer.bounds = dialPixelBounds
-        watchBezelMiniLayer.cornerRadius = dialPixelBounds.size.height/2
-        
-        
-        //    dialLayer
-        let radiusToTickMiddle = outsideRadius - tickThickness/2
-        let tickMiddleCircumference = pi * 2 * radiusToTickMiddle
-        let tickNominalGapWidth = tickMiddleCircumference / 60
-        let tickBigToSmallGapWidth = tickNominalGapWidth - bigTickWidth/2 - smallTickWidth/2
-        let tickSmalToSmallGapWidth = tickNominalGapWidth - smallTickWidth
-        let dialRotation = pi/2 + 2*pi*tickPatternPhase/tickMiddleCircumference
-        
-        let tickPattern : [NSNumber] = [
-            bigTickWidth,
-            tickBigToSmallGapWidth,
-            smallTickWidth,
-            tickSmalToSmallGapWidth,
-            smallTickWidth,
-            tickSmalToSmallGapWidth,
-            smallTickWidth,
-            tickSmalToSmallGapWidth,
-            smallTickWidth,
-            tickBigToSmallGapWidth]
-        
-        dialLayer.path = UIBezierPath(ovalInRect:CGRect(center: CGPointZero, width: radiusToTickMiddle * 2, height: radiusToTickMiddle * 2)).CGPath
-        dialLayer.bounds = dialPixelBounds
-        dialLayer.lineWidth = tickThickness
-        dialLayer.setAffineTransform(CGAffineTransformMakeRotation(-dialRotation))
-        dialLayer.lineDashPattern = tickPattern
-
-        //    hourHandLayer
-        let minuteHandLength = outsideRadius - tickThickness - 0.5
-        let hourHandLength = minuteHandLength * 2 / 3
-
-        let handleLen = CGFloat(7)
-        let handleThickness : CGFloat = 2
-        let bladeThickness : CGFloat = 6
-        let miniBladeThickness : CGFloat = 8
-        
-        hourHandLayer.path = OarShapedBezier(handleLength: handleLen, totalLength: hourHandLength, handleThickness: handleThickness, bladeThickness: bladeThickness)
-        hourHandLayer.anchorPoint = CGPoint(x: 0.5, y:0)
-        hourHandLayer.setAffineTransform(CGAffineTransformMakeRotation(0.66 * 2 * pi))
-        hourHandLayer.shadowPath = hourHandLayer.path
-        hourHandLayer.shadowOpacity = 1
-        hourHandLayer.shadowOffset = CGSizeZero
-
-        //    hourHandMiniLayer
-
-        hourHandMiniLayer.path = OarShapedBezier(handleLength: handleLen, totalLength: hourHandLength, handleThickness: handleThickness, bladeThickness: miniBladeThickness)
-        hourHandMiniLayer.anchorPoint = hourHandLayer.anchorPoint
-        hourHandMiniLayer.setAffineTransform(hourHandLayer.affineTransform())
-
-        //    minuteHandLayer
-        minuteHandLayer.path = OarShapedBezier(handleLength: handleLen, totalLength: minuteHandLength, handleThickness: handleThickness, bladeThickness: bladeThickness)
-        minuteHandLayer.anchorPoint = CGPoint(x: 0.5, y:0)
-        minuteHandLayer.setAffineTransform(CGAffineTransformMakeRotation(0.25 * 2 * pi))
-        minuteHandLayer.shadowPath = minuteHandLayer.path
-        minuteHandLayer.shadowOpacity = 1
-        minuteHandLayer.shadowOffset = CGSizeZero
-        
-
-        //    minuteHandMiniLayer
-        minuteHandMiniLayer.path = OarShapedBezier(handleLength: handleLen, totalLength: minuteHandLength, handleThickness: handleThickness, bladeThickness: miniBladeThickness)
-        minuteHandMiniLayer.anchorPoint = minuteHandLayer.anchorPoint
-        minuteHandMiniLayer.setAffineTransform(minuteHandLayer.affineTransform())
-        
-        // orangeCapMiniLayer
-        let orangeCapMiniLayerRadius = CGFloat(5)
-        orangeCapMiniLayer.bounds = CGRectMake(-orangeCapMiniLayerRadius, -orangeCapMiniLayerRadius, 2*orangeCapMiniLayerRadius, 2*orangeCapMiniLayerRadius)
-        orangeCapMiniLayer.cornerRadius = orangeCapMiniLayerRadius
-
-        //    whiteCapLayer
-        whiteCapLayer.bounds = CGRectMake(-3, -3, 6, 6)
-        whiteCapLayer.cornerRadius = 3
-
-        //    secondHandLayer
-        let secondHandLength = outsideRadius + secondHandOverhang
-        let secondHandThickness : CGFloat = 1
-        func handRect(#thickness:CGFloat, #length:CGFloat, overhang:CGFloat = 0)->CGRect {
-            return CGRect(x: -thickness/2, y: -overhang, width: thickness, height: length)
-        }
-        secondHandLayer.bounds = handRect(thickness:secondHandThickness, length:secondHandLength, overhang:secondHandOverhang)
-        secondHandLayer.anchorPoint = CGPoint(x: 0.5, y: secondHandOverhang / secondHandLength)
-
-        //    secondHandMiniLayer
-        let secondHandMiniLength = minuteHandLength + secondHandOverhang
-        secondHandMiniLayer.bounds = handRect(thickness:secondHandMiniThickness, length:secondHandMiniLength, overhang:secondHandOverhang)
-        secondHandMiniLayer.anchorPoint = CGPoint(x: 0.5, y: secondHandOverhang / secondHandMiniLength)
-        
-        //    orangeCapLayer
-        orangeCapLayer.bounds = CGRectMake(-2, -2, 4, 4)
-        orangeCapLayer.cornerRadius = 2
-
-        //    blackCapLayer
-        blackCapLayer.bounds = CGRectMake(-1, -1, 2, 2)
-        blackCapLayer.cornerRadius = 1
-
     }
 }
 
